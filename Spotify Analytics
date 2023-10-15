@@ -3,6 +3,7 @@
 # Finally, I performed analytics on the data using SQL. 
 
 #Creating the table: 
+
 CREATE TABLE BIT_DB.Spotifydata (
 id integer PRIMARY KEY,
 artist_name varchar NOT NULL,
