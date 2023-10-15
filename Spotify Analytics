@@ -1,0 +1,79 @@
+# For this project, I downloaded Spotify data from Kaggle.
+# Then I created a table to insert Spotify data into.
+# Finally, I performed analytics on the data using SQL. 
+
+#Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+)
+
+#Then I inserted the Spotify Data .csv into the table.
+
+#Next, I explored the data using the following SQL. Asking different questions about the Data.
+
+#What artist has the highest popularity and the highest energy song, and what song is it?
+
+SELECT track_name,artist_name,MAX(energy),MAX(popularity)
+FROM Spotifydata
+WHERE popularity 
+  AND energy; 
+  
+#What are the top 10 artists with the most danceable songs that are also very energetic?
+
+SELECT artist_name,danceability, energy
+FROM Spotifydata
+WHERE energy
+  AND danceability
+ORDER BY danceability DESC
+Limit 10;
+
+#What is the average loudness for songs with low valence (less happy) and high danceability?
+
+SELECT AVG(loudness) AS average_loudness
+FROM Spotifydata
+WHERE valence < 0.5 
+  AND danceability > 0.7;
+  
+#Who are the most popular artist, TOP 10?
+
+SELECT artist_name,popularity
+FROM Spotifydata
+LIMIT 10;
+
+#What is the avgerage popularity, danceability, and energy by artist and track?
+
+SELECT artist_name,track_name,avg(popularity),avg(danceability),avg(energy)
+FROM Spotifydata
+GROUP BY artist_name, track_name;
+
+#Who are the artists with the most instrumental songs, and what is the average energy level of those songs?
+
+SELECT artist_name, COUNT(*) AS instrumental_count, AVG(energy) AS average_energy
+FROM Spotifydata
+WHERE instrumentalness > 0.0000001
+GROUP BY artist_name
+ORDER BY instrumental_count DESC
+LIMIT 10;
+
+
+
+
+
+
