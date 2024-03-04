@@ -1,0 +1,47 @@
+#Perform Text Analysis to Identify Frequently Mentioned Treatments
+#To analyze frequently mentioned treatments and their associated effectiveness, you can utilize full-text search capabilities or string functions available in your SQL database. 
+#This example assumes a simplified approach using LIKE patterns or full-text search features for specific keywords related to treatments.
+
+WITH TreatmentMentions AS (
+  SELECT
+    ArticleId,
+    COUNT(*) FILTER (WHERE AbstractText LIKE '%remdesivir%') AS RemdesivirMentions,
+    COUNT(*) FILTER (WHERE AbstractText LIKE '%hydroxychloroquine%') AS HydroxychloroquineMentions,
+    COUNT(*) FILTER (WHERE AbstractText LIKE '%ivermectin%') AS IvermectinMentions
+  FROM Articles
+  GROUP BY ArticleId
+)
+SELECT
+  SUM(RemdesivirMentions) AS TotalRemdesivirMentions,
+  SUM(HydroxychloroquineMentions) AS TotalHydroxychloroquineMentions,
+  SUM(IvermectinMentions) AS TotalIvermectinMentions
+FROM TreatmentMentions;
+
+# Analyze Publication Trend Over Time
+To identify trends in research activity related to COVID-19, group articles by their publication date and count the number of articles over time.
+
+SELECT
+  FORMAT(PublicationDate, 'yyyy-MM') AS PublicationMonth,
+  COUNT(*) AS NumberOfArticles
+FROM Articles
+GROUP BY FORMAT(PublicationDate, 'yyyy-MM')
+ORDER BY PublicationMonth;
+
+#Determine the Geographical Distribution of Research
+Analyzing the affiliations of article authors can help identify which countries are contributing the most to COVID-19 research. 
+This requires parsing the affiliations text to extract country names, which might be complex depending on the data structure.
+
+
+-- Assuming we have a table that maps article authors to their affiliations and countries
+WITH CountryContributions AS (
+  SELECT
+    Country,
+    COUNT(DISTINCT ArticleId) AS ArticlesCount
+  FROM AuthorAffiliations
+  GROUP BY Country
+)
+SELECT
+  Country,
+  ArticlesCount
+FROM CountryContributions
+ORDER BY ArticlesCount DESC;
