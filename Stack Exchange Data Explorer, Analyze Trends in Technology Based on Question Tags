@@ -1,0 +1,75 @@
+#Analyze Trends in Technology Based on Question Tags- Stack Overflow , Stack Exchange Data Explorer 
+#To analyze technology trends, you can count the number of questions associated with each technology tag per 
+#year and calculate the growth rate. This involves grouping data by tag and year, then using window functions to compare counts across years.
+
+WITH TaggedQuestions AS (
+  SELECT
+    YEAR(CreationDate) AS Year,
+    Tags,
+    COUNT(*) OVER (PARTITION BY YEAR(CreationDate), Tags) AS QuestionCount
+  FROM Posts
+  WHERE PostTypeId = 1 -- 1 for Questions
+),
+YearlyGrowth AS (
+  SELECT
+    Year,
+    Tags,
+    QuestionCount,
+    LAG(QuestionCount) OVER (PARTITION BY Tags ORDER BY Year) AS PreviousYearCount,
+    (CAST(QuestionCount AS FLOAT) - LAG(QuestionCount) OVER (PARTITION BY Tags ORDER BY Year)) / LAG(QuestionCount) OVER (PARTITION BY Tags ORDER BY Year) AS GrowthRate
+  FROM TaggedQuestions
+)
+SELECT Year, Tags, QuestionCount, PreviousYearCount, GrowthRate
+FROM YearlyGrowth
+WHERE Year = YEAR(GETDATE()) - 1 -- Example for last year; adjust as needed
+ORDER BY GrowthRate DESC;
+
+#Determine the Answer Rate by Month
+#Calculating the answer rate by month involves counting the number of questions that received at least one answer within the same month they were posted.
+
+WITH MonthlyQuestions AS (
+  SELECT
+    FORMAT(CreationDate, 'yyyy-MM') AS Month,
+    COUNT(*) AS TotalQuestions
+  FROM Posts
+  WHERE PostTypeId = 1 -- Questions
+  GROUP BY FORMAT(CreationDate, 'yyyy-MM')
+),
+AnsweredQuestions AS (
+  SELECT
+    FORMAT(Q.CreationDate, 'yyyy-MM') AS Month,
+    COUNT(*) AS Answered
+  FROM Posts AS Q
+  JOIN Posts AS A ON Q.Id = A.ParentId AND MONTH(Q.CreationDate) = MONTH(A.CreationDate) AND YEAR(Q.CreationDate) = YEAR(A.CreationDate)
+  WHERE Q.PostTypeId = 1 -- Questions
+  GROUP BY FORMAT(Q.CreationDate, 'yyyy-MM')
+)
+SELECT
+  MQ.Month,
+  MQ.TotalQuestions,
+  AQ.Answered,
+  CAST(AQ.Answered AS FLOAT) / MQ.TotalQuestions AS AnswerRate
+FROM MonthlyQuestions AS MQ
+JOIN AnsweredQuestions AS AQ ON MQ.Month = AQ.Month
+ORDER BY MQ.Month;
+
+#Identify Top 10 Users Who Improved Their Reputation Most
+#To find users who have significantly improved their reputation, compare their reputation gains over the past year.
+
+WITH ReputationGains AS (
+  SELECT
+    UserId,
+    YEAR(CreationDate) AS Year,
+    SUM(Value) AS ReputationGain -- Assuming Value is the reputation change
+  FROM UserReputationHistory
+  WHERE YEAR(CreationDate) = YEAR(GETDATE()) - 1
+  GROUP BY UserId, YEAR(CreationDate)
+)
+SELECT
+  U.DisplayName,
+  RG.Year,
+  RG.ReputationGain
+FROM ReputationGains AS RG
+JOIN Users AS U ON RG.UserId = U.Id
+ORDER BY RG.ReputationGain DESC
+LIMIT 10;
