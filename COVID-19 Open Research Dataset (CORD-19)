@@ -1,4 +1,4 @@
-#Perform Text Analysis to Identify Frequently Mentioned Treatments
+# ? Perform Text Analysis to Identify Frequently Mentioned Treatments
 #To analyze frequently mentioned treatments and their associated effectiveness, you can utilize full-text search capabilities or string functions available in your SQL database. 
 #This example assumes a simplified approach using LIKE patterns or full-text search features for specific keywords related to treatments.
 
@@ -17,8 +17,12 @@ SELECT
   SUM(IvermectinMentions) AS TotalIvermectinMentions
 FROM TreatmentMentions;
 
-# Analyze Publication Trend Over Time
-To identify trends in research activity related to COVID-19, group articles by their publication date and count the number of articles over time.
+### This section of the code demonstrates how you used SQL's LIKE pattern matching within a FILTER clause to count mentions of specific COVID-19 
+treatments in article abstracts. It's a sophisticated approach to text analysis, showcasing my ability to work with text data in SQL.###
+
+
+# ? Analyze Publication Trend Over Time
+#To identify trends in research activity related to COVID-19, group articles by their publication date and count the number of articles over time.
 
 SELECT
   FORMAT(PublicationDate, 'yyyy-MM') AS PublicationMonth,
@@ -26,13 +30,17 @@ SELECT
 FROM Articles
 GROUP BY FORMAT(PublicationDate, 'yyyy-MM')
 ORDER BY PublicationMonth;
+### Here, I used the FORMAT function to group articles by their publication month and year, then counted the number of 
+articles published in each period. This query helps identify trends in COVID-19 research activity over time.
+
 
 #Determine the Geographical Distribution of Research
-Analyzing the affiliations of article authors can help identify which countries are contributing the most to COVID-19 research. 
-This requires parsing the affiliations text to extract country names, which might be complex depending on the data structure.
+#Analyzing the affiliations of article authors can help identify which countries are contributing the most to COVID-19 research. 
+#This requires parsing the affiliations text to extract country names, which might be complex depending on the data structure.
 
 
--- Assuming we have a table that maps article authors to their affiliations and countries
+-- ? Assuming we have a table that maps article authors to their affiliations and countries
+
 WITH CountryContributions AS (
   SELECT
     Country,
@@ -45,3 +53,10 @@ SELECT
   ArticlesCount
 FROM CountryContributions
 ORDER BY ArticlesCount DESC;
+
+### This section of the SQL code focuses on analyzing the affiliations of article authors to determine the geographical distribution 
+of COVID-19 research contributions. It involves grouping data by country and counting the unique articles associated with each country,
+highlighting which countries are leading in research efforts.
+
+
+#
