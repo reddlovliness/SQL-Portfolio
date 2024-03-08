@@ -1,6 +1,12 @@
 #Analyze Trends in Technology Based on Question Tags- Stack Overflow , Stack Exchange Data Explorer 
 #To analyze technology trends, you can count the number of questions associated with each technology tag per 
-#year and calculate the growth rate. This involves grouping data by tag and year, then using window functions to compare counts across years.
+#year and calculate the growth rate. This involves grouping data by tag and year, then using window 
+#functions to compare counts across years. To analyze technology trends over time, I constructed a query that 
+#groups Stack Overflow questions by their tags and year. Using a Common Table Expression (CTE) named TaggedQuestions,
+#I first extracted the year from the CreationDate, the tags, and counted the number of questions per tag and year. 
+#Then, in the YearlyGrowth CTE, I applied the LAG window function to get the previous year's question count for the
+#same tag. This allowed me to calculate the growth rate of questions per tag from one year to the next.
+#By ordering the results by growth rate, we can easily identify which technologies are gaining popularity.
 
 WITH TaggedQuestions AS (
   SELECT
@@ -24,7 +30,12 @@ FROM YearlyGrowth
 WHERE Year = YEAR(GETDATE()) - 1 -- Example for last year; adjust as needed
 ORDER BY GrowthRate DESC;
 
-#Determine the Answer Rate by Month
+#Determine the Answer Rate by Month-For calculating the monthly answer rate, my approach involved two CTEs: 
+MonthlyQuestions and AnsweredQuestions. In MonthlyQuestions, I grouped questions by month and year, 
+counting the total number of questions. In AnsweredQuestions, I joined the Posts table to itself to count 
+questions that received at least one answer within the same month of posting. Finally, by joining these two CTEs,
+I calculated the answer rate as the number of answered questions divided by the total questions per month. 
+This query helps in understanding how responsive the Stack Overflow community is over time.
 #Calculating the answer rate by month involves counting the number of questions that received at least one answer within the same month they were posted.
 
 WITH MonthlyQuestions AS (
@@ -53,7 +64,12 @@ FROM MonthlyQuestions AS MQ
 JOIN AnsweredQuestions AS AQ ON MQ.Month = AQ.Month
 ORDER BY MQ.Month;
 
-#Identify Top 10 Users Who Improved Their Reputation Most
+#Identify Top 10 Users Who Improved Their Reputation Most-To find users with the most significant reputation 
+gains in the past year, I used the UserReputationHistory table. I grouped reputation changes by UserId and year,
+summing up the reputation gains. By joining this result with the Users table, I could associate the UserId with 
+user display names and order the results by the highest reputation gains. This query highlights users who have 
+been particularly active or helpful on the platform in the past year, showcasing the potential leaders of the
+Stack Overflow community.
 #To find users who have significantly improved their reputation, compare their reputation gains over the past year.
 
 WITH ReputationGains AS (
