@@ -1,3 +1,16 @@
+This project leverages a structured dataset of Netflix titles, divided into two primary tables: 
+netflix_titles_info and netflix_people. 
+The first table captures essential information about each title, such as its ID, type (Movie or TV Show),
+title name, country of production, date added to Netflix, release year, rating, duration, and genre. 
+
+The second table links each show to its directors and cast, allowing for detailed analysis of personnel 
+involved in each title.
+
+My queries are designed to extract insights from this dataset, addressing questions about the content available 
+on Netflix. For example, I differentiate between movies and TV shows, count the number of movies in the database,
+identify the most recently added titles, alphabetically list all titles, find the director of a specific movie, 
+and determine the oldest movie in the database.
+
 This project utilized data from the following Netflix dataset: 
 
 CREATE TABLE netflix_titles_info
