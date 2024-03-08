@@ -1,3 +1,19 @@
+#This SQL code starts with creating a table fortune_companies designed to store key information 
+about companies, such as their name, industry sector, revenue, number of employees, and details about 
+employee benefits like healthcare, paid time off, maternity leave, and average tenure. 
+The table structure is carefully designed to capture a comprehensive snapshot of each company, 
+including both quantitative metrics like revenue and qualitative benefits like healthcare provisions.
+
+#Following the table creation, I used INSERT INTO statements to populate the database with data on a variety
+of companies. This data spans multiple industries—technology, retail, energy, healthcare,
+and more—highlighting the database's versatility in handling diverse company profiles. 
+Each record includes specifics about company benefits, which can be crucial for analysis on
+employee satisfaction, industry standards, or the correlation between company offerings and employee tenure.
+
+
+
+
+
 CREATE TABLE fortune_companies (
     company_id INTEGER PRIMARY KEY,
     company_name TEXT,
