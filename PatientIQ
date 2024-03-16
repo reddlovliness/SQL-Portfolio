@@ -1,0 +1,12 @@
+#Question 1
+SELECT original_title, max(revenue) AS highest_revenue
+FROM movies
+ORDER BY revenue DESC
+LIMIT 1;
+
+#Question 2
+SELECT original_title, imdb_id
+FROM movies
+WHERE revenue < budget
+ORDER BY imdb_id
+LIMIT 3;
